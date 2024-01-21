@@ -1,22 +1,24 @@
-import asyncio
 import pandas as pd
+import numpy as np
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-async def process_data(data):
-    # Your asynchronous data processing logic here
-    await asyncio.sleep(5)  # Simulating a time-consuming operation
-    result = data * 2
-    return result
+def process_data(data):
+    column_names = ['date', 'open', 'high', 'low', 'close',
+                    'shares_traded', 'turnover']
+    data.columns = column_names
+    daily_volatility = np.std(data['daily_returns'])
+    annualized_volatility = daily_volatility * np.sqrt(len(data))
+    return daily_volatility, annualized_volatility
+
 
 @csrf_exempt
 @require_POST
-async def calculate_volatility(request):
+def calculate_volatility(request):
     file_obj = request.FILES['file']
-    data = pd.read_csv(file_obj)
-
-    # Start an asynchronous task
-    result = await process_data(data)
-
-    return JsonResponse({'result': result})
+    data = pd.read_csv(file_obj, header=0)
+    daily_volatility, annualized_volatility = process_data(data)
+    return JsonResponse({'daily_volatility': daily_volatility,
+                          'annualized_volatility': annualized_volatility
+                          })
