@@ -8,6 +8,7 @@ def process_data(data):
     column_names = ['date', 'open', 'high', 'low', 'close',
                     'shares_traded', 'turnover']
     data.columns = column_names
+    data['daily_returns'] = (data['close'] / data['close'].shift(1)) - 1
     daily_volatility = np.std(data['daily_returns'])
     annualized_volatility = daily_volatility * np.sqrt(len(data))
     return daily_volatility, annualized_volatility
