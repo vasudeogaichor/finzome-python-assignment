@@ -25,7 +25,7 @@ Make sure you have Docker and Docker Compose installed on your machine.
     ```bash
     docker-compose up --build
     ```
-4. Access your application at http://localhost:8000.
+4. Access your application at http://127.0.0.1:8000.
 
 ### Stopping the Application
 To stop the Docker containers, use the following command:
@@ -71,7 +71,7 @@ docker-compose down
     ```bash
     python manage.py runserver
     ```
-Access your application at http://localhost:8000.
+Access your application at http://127.0.0.1:8000.
 
 ### Stopping the Server:
 To stop the Django development server, press Ctrl + C in the terminal.
