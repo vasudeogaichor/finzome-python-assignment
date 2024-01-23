@@ -31,6 +31,19 @@
         <div id="resultContainer"></div>
     </div>
 
+    <div class="modal fade" id="loaderModal" tabindex="-1" role="dialog" aria-labelledby="loaderModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p class="mt-2">Calculating volatility...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Include Bootstrap JS and Popper.js -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
@@ -40,6 +53,9 @@
         async function calculateVolatility() {
             const fileInput = document.getElementById('fileInput');
             const resultContainer = document.getElementById('resultContainer');
+            const loaderModal = new bootstrap.Modal(document.getElementById('loaderModal'));
+
+            loaderModal.show();
 
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
@@ -83,6 +99,8 @@
             } catch (error) {
                 console.error('Error:', error);
                 resultContainer.innerHTML = '<p>An error occurred while calculating volatility.</p>';
+            } finally {
+                loaderModal.hide();
             }
         }
     </script>
