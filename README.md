@@ -1,5 +1,5 @@
 # STOCK VOLATILITY CALCULATOR
-API to upload closing prices of stock and calculate Daily and Anual Volatility
+Django app to upload closing prices of stock and calculate Daily and Anual Volatility
 
 ## Getting Started
 These instructions will help you set up and run your Django project using Docker.
