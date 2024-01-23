@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volatility Calculator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        #resultContainer {
+            margin-top: 20px;
+        }
+    </style>
+    {% csrf_token %}
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5">Volatility Calculator</h1>
+        <form class="mt-3">
+            <div class="form-group">
+                <label for="fileInput">Upload CSV File</label>
+                <input type="file" class="form-control-file" id="fileInput" accept=".csv" required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="calculateVolatility()">Calculate Volatility</button>
+        </form>
+        <div id="resultContainer"></div>
+    </div>
+
+    <!-- Include Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        async function calculateVolatility() {
+            const fileInput = document.getElementById('fileInput');
+            const resultContainer = document.getElementById('resultContainer');
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            console.log('csrf - ', document.getElementsByName('csrfmiddlewaretoken')[0].value)
+            try {
+                const response = await fetch('/api/calculate-volatility/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                resultContainer.innerHTML = `
+                <h2>Results</h2>
+                <table class="table">   
+                    <thead>
+                        <tr>
+                            <th scope="col">Metric</th>
+                            <th scope="col">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Daily Volatility</td>
+                            <td>${data.daily_volatility}</td>
+                        </tr>
+                        <tr>
+                            <td>Annualized Volatility</td>
+                            <td>${data.annualized_volatility}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultContainer.innerHTML = '<p>An error occurred while calculating volatility.</p>';
+            }
+        }
+    </script>
+</body>
+
+</html>

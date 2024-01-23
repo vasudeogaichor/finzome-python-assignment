@@ -1,10 +1,9 @@
 import pandas as pd
 import numpy as np
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 
-@csrf_protect
 def process_data(data):
     """
     Process the input DataFrame to calculate daily and annualized volatility.
@@ -24,7 +23,7 @@ def process_data(data):
     return daily_volatility, annualized_volatility
 
 
-@csrf_exempt
+@csrf_protect
 @require_POST
 def calculate_volatility(request):
     """
