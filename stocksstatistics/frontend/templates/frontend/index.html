@@ -59,7 +59,6 @@
 
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
-            console.log('csrf - ', document.getElementsByName('csrfmiddlewaretoken')[0].value)
             try {
                 const response = await fetch('/api/calculate-volatility/', {
                     method: 'POST',
